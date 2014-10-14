@@ -1,0 +1,22 @@
+<div class="row">
+
+	<div class="col-md-4">
+		<h1>Users</h1>
+
+		<form>
+			{{input value=name placeholder="name"}}
+			<button {{action 'addUser'}}>Add</button>
+		</form>
+
+		<ul>
+			{{#each model}}
+				<li>{{link-to name 'todos.index' this.id}}</li>
+			{{/each}}
+		</ul>
+	</div>
+
+	<div class="col-md-8">
+		{{outlet}}
+	</div>
+
+</div>
