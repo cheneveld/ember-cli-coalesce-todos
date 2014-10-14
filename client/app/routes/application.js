@@ -1,16 +1,16 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-	model: function(){
-		return this.session.query('user');
-	},
+    model: function() {
+        return this.session.query('user');
+    },
 
-	actions: {
-		addUser: function(){
-			var self = this;
-			var user = this.session.create('user', this.get("controller").getProperties("name"));
+    actions: {
+        addUser: function() {
+            var self = this;
+            var user = this.session.create('user', this.get("controller").getProperties("name"));
 
-			self.session.flush().then(function(models){
+            self.session.flush().then(function(models) {
                 var savedUser = models[0];
 
                 // response from server
@@ -21,10 +21,10 @@ export default Ember.Route.extend({
                 console.log("savedUser id", savedUser.get('id'));
 
                 self.get("controller.model").pushObject(savedUser);
-                
-            }, function(){
-				self.get("controller.model").removeObject(user);				
-			});
-		}
-	}
+
+            }, function() {
+                self.get("controller.model").removeObject(user);
+            });
+        }
+    }
 });
