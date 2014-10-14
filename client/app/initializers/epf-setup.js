@@ -5,7 +5,7 @@ var decamelize = Ember.String.decamelize,
     underscore = Ember.String.underscore,
     pluralize = Ember.String.pluralize;
 
-var Serializer = Ep.ModelSerializer.extend({
+var Serializer = Cs.ModelSerializer.extend({
   keyForType: function(name, type, opts) {
     var key = this._super(name, type);
     if(!opts || !opts.embedded) {
@@ -31,7 +31,7 @@ var UserSerializer = Serializer.extend({
   }
 });
 
-var Adapter = Ep.ActiveModelAdapter.extend({
+var Adapter = Cs.ActiveModelAdapter.extend({
 	host: 'http://localhost:3000',
   defaultSerializer: 'payload',
 
