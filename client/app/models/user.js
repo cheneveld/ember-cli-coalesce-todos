@@ -1,5 +1,5 @@
-export default Cs.Model.extend({
+export default Coalesce.Model.extend({
 	typeKey: 'user',
-	name: Ep.attr('string'),
-	todos: Ep.hasMany('todo')
+	name: Coalesce.attr('string'),
+	todos: Coalesce.hasMany('todo')
 });

@@ -5,7 +5,7 @@ var decamelize = Ember.String.decamelize,
     underscore = Ember.String.underscore,
     pluralize = Ember.String.pluralize;
 
-var Serializer = Cs.ModelSerializer.extend({
+var Serializer = CoalesceModelSerializer.extend({
   keyForType: function(name, type, opts) {
     var key = this._super(name, type);
     if(!opts || !opts.embedded) {
@@ -31,7 +31,7 @@ var UserSerializer = Serializer.extend({
   }
 });
 
-var Adapter = Cs.ActiveModelAdapter.extend({
+var Adapter = CoalesceActiveModelAdapter.extend({
 	host: 'http://localhost:3000',
   defaultSerializer: 'payload',
 
@@ -45,8 +45,8 @@ var Adapter = Cs.ActiveModelAdapter.extend({
 });
 
 export default {
-  name: 'epf-setup',
-  before: 'epf.container',
+  name: 'coalesce-setup',
+  before: 'coalesce.container',
   initialize: function(container) {
     container.register('adapter:application', Adapter);
   }

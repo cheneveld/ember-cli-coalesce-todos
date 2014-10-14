@@ -18,6 +18,8 @@ var app = new EmberApp();
 // along with the exports of each module as its value.
 
 //app.import('bower_components/coalesce-ember/coalesce-ember.amd.js');
+
+app.import('bower_components/lodash/dist/lodash.js');
 app.import('bower_components/coalesce-ember/coalesce-ember.standalone.js');
 
 app.import('bower_components/normalize-css/normalize.css');
