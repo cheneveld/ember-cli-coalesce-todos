@@ -1,11 +1,19 @@
 import User from 'todos/models/user';
 import Todo from 'todos/models/todo';
 
+User.reopenClass({
+  typeKey:  'user'
+});
+
+Todo.reopenClass({
+  typeKey:  'todo'
+});
+
 var decamelize = Ember.String.decamelize,
     underscore = Ember.String.underscore,
     pluralize = Ember.String.pluralize;
 
-var Serializer = CoalesceModelSerializer.extend({
+var Serializer = Coalesce.ActiveModelSerializer.extend({
   keyForType: function(name, type, opts) {
     var key = this._super(name, type);
     if(!opts || !opts.embedded) {
@@ -31,17 +39,9 @@ var UserSerializer = Serializer.extend({
   }
 });
 
-var Adapter = CoalesceActiveModelAdapter.extend({
+var Adapter = Coalesce.ActiveModelAdapter.extend({
 	host: 'http://localhost:3000',
-  defaultSerializer: 'payload',
-
-  setupContainer: function(parent) {
-    var container = this._super(parent);
-    container.register('serializer:model', Serializer);
-    container.register('serializer:todo', TodoSerializer);
-    container.register('serializer:user', UserSerializer);
-    return container;
-  }
+    defaultSerializer: 'payload',
 });
 
 export default {
