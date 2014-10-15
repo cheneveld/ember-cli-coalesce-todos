@@ -3,6 +3,12 @@ class TodosController < ApplicationController
 		render json: Todo.all
 	end
 
+
+	def show
+		@todo = Todo.find(params[:id])
+		render json: @todo
+	end
+
 	def create
 		todo = Todo.new(create_todo_params)
 
@@ -16,8 +22,6 @@ class TodosController < ApplicationController
 	end
 
 	def create_todo_params
-		cparams = params.require(:todo).permit(:title, :description, :client_id, :client_rev, :user)
-		cparams[:user_id] = cparams.delete(:user)
-		cparams
+		params.require(:todo).permit(:title, :description, :client_id, :client_rev, :user_id)
 	end
 end

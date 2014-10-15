@@ -1,9 +1,10 @@
-import Todo from 'todos/models/todo';
+import Ember from 'ember';
+// import Todo from 'todos/models/todo';
 
 export default Ember.Route.extend({
 	needs: ['user'],
 
-	model: function(params){
+	model: function(){
 		return this.modelFor('user').get('todos');
 	},
 
@@ -19,7 +20,8 @@ export default Ember.Route.extend({
 			});
 
 			self.session.flush().then(function(){
-				debugger
+                self.get("controller").set("title", "");
+                self.get("controller").set("description", "");
 			}, function(){
 				self.get("controller.model").removeObject(todo);				
 

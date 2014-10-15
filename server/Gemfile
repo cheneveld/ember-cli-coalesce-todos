@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
-
+ruby '2.1.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.1.2'
+gem 'rails', '4.1.6'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 # Use SCSS for stylesheets
@@ -27,7 +27,7 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring',        group: :development
-gem 'active_model_serializers', github: 'colby-swandale/active_model_serializers', :ref => '2e791b6d5b0d40ab4ad427ba0e02f84b78bb8345'
+gem 'active_model_serializers', '~> 0.8.2'
 
 group :development do
 	gem 'pry-remote'
