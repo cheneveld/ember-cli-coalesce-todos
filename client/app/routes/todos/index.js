@@ -19,13 +19,14 @@ export default Ember.Route.extend({
 				user: this.modelFor('user')
 			});
 
-			self.session.flush().then(function(){
+            self.session.flush().then(function(models) {
+                self.session.saveToStorage();
                 self.get("controller").set("title", "");
                 self.get("controller").set("description", "");
-			}, function(){
-				self.get("controller.model").removeObject(todo);				
-
-			});
+            }, function(error) {
+                self.session.saveToStorage();
+                
+            });
 		}
 	}
 });

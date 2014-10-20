@@ -19,6 +19,7 @@ var app = new EmberApp();
 
 //app.import('bower_components/coalesce-ember/coalesce-ember.amd.js');
 
+app.import('bower_components/localforage/dist/localforage.js');
 app.import('bower_components/lodash/dist/lodash.js');
 app.import('vendor/coalesce-ember/coalesce-ember.standalone.js');
 
