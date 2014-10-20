@@ -20,7 +20,7 @@ var app = new EmberApp();
 //app.import('bower_components/coalesce-ember/coalesce-ember.amd.js');
 
 app.import('bower_components/lodash/dist/lodash.js');
-app.import('bower_components/coalesce-ember/coalesce-ember.standalone.js');
+app.import('vendor/coalesce-ember/coalesce-ember.standalone.js');
 
 app.import('bower_components/normalize-css/normalize.css');
 
