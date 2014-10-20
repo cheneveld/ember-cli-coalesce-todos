@@ -15,8 +15,7 @@
     "normalize-css": "~3.0.1",
     "bootstrap-sass-official": "~3.2.0+2",
     "coalesce-ember": "*",
-    "lodash": "~2.4.1",
-    "localforage": "~1.0.2"
+    "lodash": "~2.4.1"
   },
   "devDependencies": {}
 }
