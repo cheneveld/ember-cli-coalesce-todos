@@ -18,6 +18,21 @@ export default Ember.Route.extend({
             }, function() {
                 self.get("controller.model").removeObject(user);
             });
+        },
+        saveToStorage: function() {
+            console.log(this.session.saveToStorage);
+            this.session.saveToStorage().then(function() {
+                alert('saved!');
+            }, function() {
+                alert('error!');
+            });
+        },
+        loadFromStorage: function() {
+            this.session.loadFromStorage().then(function() {
+                alert('loaded!');
+            }, function() {
+                alert('error!');
+            });
         }
     }
 });
