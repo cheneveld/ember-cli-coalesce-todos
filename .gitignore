@@ -1,24 +1,18 @@
 ######## SERVER IGNORES ########
 # Ignore bundler config
-/server/.bundle
+server/.bundle
 
 # Ignore the default SQLite database.
-/server/db/*.sqlite3
+server/db/*.sqlite3
 
 # Ignore all logfiles and tempfiles.
-/server/log/*.log
-/server/tmp
+server/log/*.log
+server/tmp
 
-/server/.project
-script/adept_scale_script__.zip
-
-#ignore the manifest as it has passwords
-/server/addon-manifest.json
+server/.project
 
 ###### CLIENT IGNORES ######
-/client/tmp
-
-/client/node_modules
-/client/tmp
-/client/bower_components
+client/node_modules
+client/tmp
+client/bower_components
 
