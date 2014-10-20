@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "ember server",
-    "build": "ember build",
+    "build": "./build.sh",
     "test": "ember test"
   },
   "repository": "https://github.com/stefanpenner/ember-cli",

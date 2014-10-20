@@ -15,4 +15,4 @@ server/.project
 client/node_modules
 client/tmp
 client/bower_components
-
+client/vendor/coalesce-ember/*
