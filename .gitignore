@@ -1,1 +1,6 @@
 client/tmp
+
+client/node_modules
+client/tmp
+client/bower_components
+
