@@ -85842,7 +85842,7 @@ System.get("traceur-runtime@0.0.60/src/runtime/polyfills/polyfills" + '');
  * @copyright Copyright 2014 Gordon L. Hempton and contributors
  * @license   Licensed under MIT license
  *            See https://raw.github.com/coalescejs/coalesce/master/LICENSE
- * @version   0.4.0+dev.0c2cac9b
+ * @version   0.4.0+dev.2a45832c
  */
 define("coalesce", ['./namespace', './container', './container', './adapter', './id_manager', './collections/model_array', './collections/model_set', './collections/has_many_array', './merge/base', './merge/per_field', './model/model', './model/diff', './model/errors', './rest/serializers/errors', './rest/serializers/payload', './rest/embedded_manager', './rest/operation', './rest/operation_graph', './rest/payload', './rest/rest_adapter', './active_model/active_model_adapter', './active_model/serializers/model', './serializers/base', './serializers/belongs_to', './serializers/boolean', './serializers/date', './serializers/has_many', './serializers/id', './serializers/number', './serializers/model', './serializers/revision', './serializers/string', './session/collection_manager', './session/inverse_manager', './session/session', './utils/is_equal', './utils/inflector'], function($__0,$__2,$__4,$__6,$__8,$__10,$__12,$__14,$__16,$__18,$__20,$__22,$__23,$__25,$__27,$__29,$__31,$__33,$__35,$__37,$__39,$__41,$__43,$__45,$__47,$__49,$__51,$__53,$__55,$__57,$__59,$__61,$__63,$__65,$__67,$__69,$__71) {
   "use strict";
@@ -87402,9 +87402,9 @@ define("coalesce/id_manager", ['./utils/base_class'], function($__0) {
   if (!$__0 || !$__0.__esModule)
     $__0 = {default: $__0};
   var BaseClass = $__0.default;
-  var uuid = 1;
   var IdManager = function IdManager() {
     this.idMaps = {};
+    this.uuid = 1;
   };
   ($traceurRuntime.createClass)(IdManager, {
     reifyClientId: function(model) {
@@ -87441,7 +87441,7 @@ define("coalesce/id_manager", ['./utils/base_class'], function($__0) {
       return idMap && idMap[id + ''];
     },
     _generateClientId: function(typeKey) {
-      return typeKey + (uuid++);
+      return typeKey + (this.uuid++);
     }
   }, {}, BaseClass);
   var $__default = IdManager;
@@ -88431,7 +88431,7 @@ define("coalesce/namespace", [], function() {
     } catch (e) {}
   }
   var Coalesce = {
-    VERSION: '0.4.0+dev.0c2cac9b',
+    VERSION: '0.4.0+dev.2a45832c',
     Promise: Promise,
     ajax: ajax,
     run: Backburner && new Backburner(['actions'])
@@ -90004,10 +90004,7 @@ define("coalesce/serializers/model_set", ['./base', '../collections/model_set'],
   var Serializer = $__0.default;
   var ModelSet = $__2.default;
   var ModelSetSerializer = function ModelSetSerializer() {
-    for (var args = [],
-        $__5 = 0; $__5 < arguments.length; $__5++)
-      args[$__5] = arguments[$__5];
-    $traceurRuntime.superCall(this, $ModelSetSerializer.prototype, "constructor", [args]);
+    $traceurRuntime.defaultSuperCall(this, $ModelSetSerializer.prototype, arguments);
   };
   var $ModelSetSerializer = ModelSetSerializer;
   ($traceurRuntime.createClass)(ModelSetSerializer, {
@@ -90108,20 +90105,20 @@ define("coalesce/serializers/revision", ['../utils/is_empty', './base'], functio
   };
 });
 
-define("coalesce/serializers/session", ['./base', './model_set'], function($__0,$__2) {
+define("coalesce/serializers/session", ['./base', './model_set', '../session/query_cache'], function($__0,$__2,$__4) {
   "use strict";
   var __moduleName = "coalesce/serializers/session";
   if (!$__0 || !$__0.__esModule)
     $__0 = {default: $__0};
   if (!$__2 || !$__2.__esModule)
     $__2 = {default: $__2};
+  if (!$__4 || !$__4.__esModule)
+    $__4 = {default: $__4};
   var Serializer = $__0.default;
   var ModelSetSerializer = $__2.default;
+  var QueryCache = $__4.default;
   var SessionSerializer = function SessionSerializer() {
-    for (var args = [],
-        $__5 = 0; $__5 < arguments.length; $__5++)
-      args[$__5] = arguments[$__5];
-    $traceurRuntime.superCall(this, $SessionSerializer.prototype, "constructor", [args]);
+    $traceurRuntime.defaultSuperCall(this, $SessionSerializer.prototype, arguments);
   };
   var $SessionSerializer = SessionSerializer;
   ($traceurRuntime.createClass)(SessionSerializer, {
@@ -90130,21 +90127,29 @@ define("coalesce/serializers/session", ['./base', './model_set'], function($__0,
       var deserialized = {
         models: null,
         newModels: null,
-        shadows: null
+        shadows: null,
+        queryCache: null
       };
       if (!serialized) {
         return deserialized;
       }
-      if (serialized.models) {
-        deserialized.models = modelSetSerializer.deserialize(serialized.models);
-      }
-      if (serialized.newModels) {
-        deserialized.newModels = modelSetSerializer.deserialize(serialized.newModels);
-      }
-      if (serialized.shadows) {
-        deserialized.shadows = modelSetSerializer.deserialize(serialized.shadows);
-      }
+      deserialized.models = modelSetSerializer.deserialize(serialized.models);
+      deserialized.newModels = modelSetSerializer.deserialize(serialized.newModels);
+      deserialized.shadows = modelSetSerializer.deserialize(serialized.shadows);
+      deserialized.queryCache = this.deserializeQueryCache(serialized.queryCache, deserialized.models);
+      deserialized.uuidStart = serialized.uuidStart;
       return deserialized;
+    },
+    deserializeQueryCache: function(serialized, models) {
+      var queries = {};
+      for (var key in serialized) {
+        if (!serialized.hasOwnProperty(key))
+          continue;
+        queries[key] = serialized[key].map(function(clientId) {
+          return models.getForClientId(clientId);
+        });
+      }
+      return new QueryCache(queries);
     },
     serialize: function(session) {
       var modelSetSerializer = this.serializerFor('model-set');
@@ -90153,16 +90158,24 @@ define("coalesce/serializers/session", ['./base', './model_set'], function($__0,
         newModels: {},
         shadows: {}
       };
-      if (session.models) {
-        serialized.models = modelSetSerializer.serialize(session.models);
-      }
-      if (session.newModels) {
-        serialized.newModels = modelSetSerializer.serialize(session.newModels);
-      }
-      if (session.shadows) {
-        serialized.shadows = modelSetSerializer.serialize(session.shadows);
-      }
+      serialized.models = modelSetSerializer.serialize(session.models);
+      serialized.newModels = modelSetSerializer.serialize(session.newModels);
+      serialized.shadows = modelSetSerializer.serialize(session.shadows);
+      serialized.queryCache = this.serializeQueryCache(session.queryCache);
+      serialized.uuidStart = session.idManager.uuid;
       return serialized;
+    },
+    serializeQueryCache: function(cache) {
+      var res = {},
+          queries = cache._queries;
+      for (var key in queries) {
+        if (!queries.hasOwnProperty(key))
+          continue;
+        res[key] = queries[key].map(function(m) {
+          return m.clientId;
+        });
+      }
+      return res;
     }
   }, {}, Serializer);
   var $__default = SessionSerializer;
@@ -90405,7 +90418,100 @@ define("coalesce/session/inverse_manager", ['../collections/model_set', '../util
   };
 });
 
-define("coalesce/session/session", ['../collections/model_array', '../collections/model_set', './collection_manager', './inverse_manager', '../model/model', './cache', '../factories/type', '../factories/merge', '../utils/copy', '../error', '../utils/array_from'], function($__0,$__2,$__4,$__6,$__8,$__10,$__12,$__14,$__16,$__18,$__20) {
+define("coalesce/session/query", ['../collections/observable_array'], function($__0) {
+  "use strict";
+  var __moduleName = "coalesce/session/query";
+  if (!$__0 || !$__0.__esModule)
+    $__0 = {default: $__0};
+  var ObservableArray = $__0.default;
+  var Query = function Query(session, type, params) {
+    this.session = session;
+    this._type = type;
+    this._params = params;
+    $traceurRuntime.superCall(this, $Query.prototype, "constructor", []);
+  };
+  var $Query = Query;
+  ($traceurRuntime.createClass)(Query, {
+    get params() {
+      return this._params;
+    },
+    get type() {
+      return this._type;
+    },
+    invalidate: function() {
+      return this.session.invalidateQuery(this);
+    },
+    refresh: function() {
+      return this.session.refreshQuery(this);
+    }
+  }, {}, ObservableArray);
+  var $__default = Query;
+  return {
+    get default() {
+      return $__default;
+    },
+    __esModule: true
+  };
+});
+
+define("coalesce/session/query_cache", ['../namespace'], function($__0) {
+  "use strict";
+  var __moduleName = "coalesce/session/query_cache";
+  if (!$__0 || !$__0.__esModule)
+    $__0 = {default: $__0};
+  var Coalesce = $__0.default;
+  var QueryCache = function QueryCache() {
+    var queries = arguments[0] !== (void 0) ? arguments[0] : {};
+    this._queries = queries;
+    this._promises = {};
+  };
+  ($traceurRuntime.createClass)(QueryCache, {
+    add: function(query) {
+      var promise = arguments[1] !== (void 0) ? arguments[1] : null;
+      var key = this.keyFor(query.type, query.params);
+      if (promise) {
+        this._promises[key] = promise;
+      }
+      this._queries[key] = query;
+    },
+    remove: function(query) {
+      var key = this.keyFor(query.type, query.params);
+      delete this._queries[key];
+      delete this._promises[key];
+    },
+    removeAll: function(type) {
+      var queries = this._queries;
+      for (var key in queries) {
+        if (!queries.hasOwnProperty(key))
+          continue;
+        var typeKey = key.split('$')[0];
+        if (type.typeKey === typeKey) {
+          this.remove(queries[key]);
+        }
+      }
+    },
+    getQuery: function(type, params) {
+      var key = this.keyFor(type, params);
+      return this._queries[key];
+    },
+    getPromise: function(query) {
+      var key = this.keyFor(query.type, query.params);
+      return this._promises[key];
+    },
+    keyFor: function(type, params) {
+      return type.typeKey + '$' + JSON.stringify(params);
+    }
+  }, {});
+  var $__default = QueryCache;
+  return {
+    get default() {
+      return $__default;
+    },
+    __esModule: true
+  };
+});
+
+define("coalesce/session/session", ['../collections/model_array', '../collections/model_set', './collection_manager', './inverse_manager', '../model/model', './cache', './query', './query_cache', '../factories/type', '../factories/merge', '../utils/copy', '../error', '../utils/array_from'], function($__0,$__2,$__4,$__6,$__8,$__10,$__12,$__14,$__16,$__18,$__20,$__22,$__24) {
   "use strict";
   var __moduleName = "coalesce/session/session";
   if (!$__0 || !$__0.__esModule)
@@ -90430,25 +90536,31 @@ define("coalesce/session/session", ['../collections/model_array', '../collection
     $__18 = {default: $__18};
   if (!$__20 || !$__20.__esModule)
     $__20 = {default: $__20};
+  if (!$__22 || !$__22.__esModule)
+    $__22 = {default: $__22};
+  if (!$__24 || !$__24.__esModule)
+    $__24 = {default: $__24};
   var ModelArray = $__0.default;
   var ModelSet = $__2.default;
   var CollectionManager = $__4.default;
   var InverseManager = $__6.default;
   var Model = $__8.default;
   var Cache = $__10.default;
-  var TypeFactory = $__12.default;
-  var MergeFactory = $__14.default;
-  var copy = $__16.default;
-  var Error = $__18.default;
-  var array_from = $__20.default;
+  var Query = $__12.default;
+  var QueryCache = $__14.default;
+  var TypeFactory = $__16.default;
+  var MergeFactory = $__18.default;
+  var copy = $__20.default;
+  var Error = $__22.default;
+  var array_from = $__24.default;
   var uuid = 1;
   var sessionStorageKey = "___session_collections";
-  var Session = function Session($__23) {
-    var $__24 = $__23,
-        adapter = $__24.adapter,
-        idManager = $__24.idManager,
-        container = $__24.container,
-        parent = $__24.parent;
+  var Session = function Session($__27) {
+    var $__28 = $__27,
+        adapter = $__28.adapter,
+        idManager = $__28.idManager,
+        container = $__28.container,
+        parent = $__28.parent;
     this.adapter = adapter;
     this.idManager = idManager;
     this.container = container;
@@ -90460,6 +90572,7 @@ define("coalesce/session/session", ['../collections/model_array', '../collection
     this.originals = new ModelSet();
     this.newModels = new ModelSet();
     this.cache = new Cache();
+    this.queryCache = new QueryCache();
     this.typeFactory = new TypeFactory(container);
     this.mergeFactory = new MergeFactory(container);
     this._dirtyCheckingSuspended = false;
@@ -90582,21 +90695,46 @@ define("coalesce/session/session", ['../collections/model_array', '../collection
       }
       return promise;
     },
+    refresh: function(model, opts) {
+      var session = this;
+      return this.adapter.load(model, opts, this);
+    },
     find: function(type, query, opts) {
       if (typeof query === 'object') {
         return this.query(type, query, opts);
       }
       return this.load(type, query, opts);
     },
-    query: function(type, query, opts) {
+    buildQuery: function(type, params) {
       type = this.typeFor(type);
-      var typeKey = type.typeKey;
-      var promise = this.adapter.query(typeKey, query, opts, this);
+      return new Query(this, type, params);
+    },
+    fetchQuery: function(type, params) {
+      type = this.typeFor(type);
+      var query = this.queryCache.getQuery(type, params);
+      if (!query) {
+        query = this.buildQuery(type, params);
+        this.queryCache.add(query);
+      }
+      return query;
+    },
+    query: function(type, params, opts) {
+      var type = this.typeFor(type),
+          query = this.fetchQuery(type, params),
+          promise = this.queryCache.getPromise(query);
+      if (!promise) {
+        promise = this.refreshQuery(query, opts);
+      }
       return promise;
     },
-    refresh: function(model, opts) {
-      var session = this;
-      return this.adapter.load(model, opts, this);
+    refreshQuery: function(query, opts) {
+      var promise = this.adapter.query(query.type.typeKey, query.params, opts, this).then(function(models) {
+        query.meta = models.meta;
+        query.replace(0, query.length, models);
+        return query;
+      });
+      this.queryCache.add(query, promise);
+      return promise;
     },
     flush: function() {
       var session = this,
@@ -90706,6 +90844,13 @@ define("coalesce/session/session", ['../collections/model_array', '../collection
     },
     invalidate: function(model) {
       this.cache.removeModel(model);
+    },
+    invalidateQuery: function(query) {
+      this.queryCache.remove(query);
+    },
+    invalidateQueries: function(type) {
+      var type = this.typeFor(type);
+      this.queryCache.removeAll(type);
     },
     markClean: function(model) {
       this.shadows.remove(model);
@@ -90904,6 +91049,8 @@ define("coalesce/session/session", ['../collections/model_array', '../collection
           self.models = deserializedSession.models;
           self.newModels = deserializedSession.newModels;
           self.shadows = deserializedSession.shadows;
+          self.queryCache = deserializedSession.queryCache;
+          self.idManager.uuid = deserializedSession.uuidStart;
         }
         return value;
       }, function(error) {

@@ -2,11 +2,8 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
     model: function() {
-        return this.session.query('user').then(function(value){
-            return value;
-        },function(error){
-            console.error(error);
-            return [];
+        return this.session.query('user').then(function(users){
+            return users;
         });
     },
 
@@ -16,12 +13,16 @@ export default Ember.Route.extend({
             var properties = this.get("controller").getProperties("name");
             var user = this.session.create('user', properties);
 
-            self.get("controller.model").pushObject(user);
+            // debugger;
+            var model = this.get("controller.model");
 
-            self.session.flush().then(function(models) {
+            model.pushObject(user);
+
+            self.session.flush().then(function() {
                 self.session.saveToStorage();
                 self.get("controller").set("name", "");
             }, function(error) {
+                console.error(error);
                 self.session.saveToStorage();
                 
             });
@@ -41,7 +42,7 @@ export default Ember.Route.extend({
             });
         },
         flushSession: function(){
-            this.session.flush().then(function(models){
+            this.session.flush().then(function(){
                 alert('session flushed');
             },function(error){
                 console.error(error);

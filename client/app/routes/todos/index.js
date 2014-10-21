@@ -13,17 +13,18 @@ export default Ember.Route.extend({
 			var self = this;
 			var controller = this.get("controller");
 
-			var todo = this.session.create('todo', {
+			this.session.create('todo', {
 				title: controller.get("title"),
 				description: controller.get("description"),
 				user: this.modelFor('user')
 			});
 
-            self.session.flush().then(function(models) {
+            self.session.flush().then(function() {
                 self.session.saveToStorage();
                 self.get("controller").set("title", "");
                 self.get("controller").set("description", "");
             }, function(error) {
+                console.error(error);
                 self.session.saveToStorage();
                 
             });
