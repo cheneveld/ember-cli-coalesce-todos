@@ -3,7 +3,8 @@
     "document": true,
     "window": true,
     "-Promise": true,
-    "TodosENV": true
+    "TodosENV": true,
+    "Coalesce": true
   },
   "browser" : true,
   "boss" : true,
@@ -14,6 +15,7 @@
   "evil": true,
   "forin": false,
   "immed": false,
+  "jquery": true,
   "laxbreak": false,
   "newcap": true,
   "noarg": true,
@@ -29,5 +31,5 @@
   "white": false,
   "eqnull": true,
   "esnext": true,
-  "unused": true
+  "unused": false
 }
