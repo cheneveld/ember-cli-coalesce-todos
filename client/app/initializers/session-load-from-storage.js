@@ -1,7 +1,13 @@
 export default {
   name: 'session-load-from-storage',
-  initialize: function(container) {
+  initialize: function(container, app) {
     var session = container.lookup('session:main');
-    session.loadFromStorage();
+    
+    app.deferReadiness();
+    session.loadFromStorage().then(function(){
+        var _s = session;
+        debugger
+        app.advanceReadiness();
+    });
   }
 };

@@ -19,11 +19,11 @@ export default Ember.Route.extend({
             model.pushObject(user);
 
             self.session.flush().then(function() {
-                self.session.saveToStorage();
+                // self.session.saveToStorage();
                 self.get("controller").set("name", "");
             }, function(error) {
                 console.error(error);
-                self.session.saveToStorage();
+                // self.session.saveToStorage();
                 
             });
         },
