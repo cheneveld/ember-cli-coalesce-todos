@@ -20,12 +20,12 @@ export default Ember.Route.extend({
 			});
 
             self.session.flush().then(function() {
-                self.session.saveToStorage();
+                Coalesce.EmberSession.saveToStorage(self.session);
                 self.get("controller").set("title", "");
                 self.get("controller").set("description", "");
             }, function(error) {
                 console.error(error);
-                self.session.saveToStorage();
+                Coalesce.EmberSession.saveToStorage(self.session);
                 
             });
 		}

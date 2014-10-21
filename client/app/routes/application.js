@@ -2,7 +2,11 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
     model: function() {
+        var self = this;
         return this.session.query('user').then(function(users){
+            var session = self.session;
+            Coalesce.EmberSession.saveToStorage(session);
+            // debugger
             return users;
         });
     },
@@ -19,23 +23,23 @@ export default Ember.Route.extend({
             model.pushObject(user);
 
             self.session.flush().then(function() {
-                // self.session.saveToStorage();
+                Coalesce.EmberSession.saveToStorage(this.session);
                 self.get("controller").set("name", "");
             }, function(error) {
                 console.error(error);
-                // self.session.saveToStorage();
+                Coalesce.EmberSession.saveToStorage(this.session);
                 
             });
         },
         saveToStorage: function() {
-            this.session.saveToStorage().then(function() {
+            Coalesce.EmberSession.saveToStorage(this.session).then(function() {
                 alert('saved!');
             }, function() {
                 alert('error!');
             });
         },
         loadFromStorage: function() {
-            this.session.loadFromStorage().then(function() {
+            Coalesce.EmberSession.loadFromStorage(this.session).then(function() {
                 alert('loaded!');
             }, function() {
                 alert('error!');
