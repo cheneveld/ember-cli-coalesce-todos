@@ -27,12 +27,11 @@ export default Ember.ObjectController.extend({
             self.session.deleteModel(user);
 
             self.session.flush().then(function() {
-                Coalesce.EmberSession.saveToStorage(self.session);
+                console.log("User::removeUser: flush done");
             }, function(error) {
-                console.error(error);
-                Coalesce.EmberSession.saveToStorage(self.session);                
-            });
+                console.error("Todo::removeUser: flush error", error);
 
+            });
         }
     }
 });

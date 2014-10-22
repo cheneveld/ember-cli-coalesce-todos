@@ -4,29 +4,36 @@ export default Ember.Route.extend({
     model: function() {
         var self = this;
         return this.session.query('user').then(function(users){
-            Coalesce.EmberSession.saveToStorage(self.session);
             return users;
         }, function(error){
-          console.error(error);
+          console.error("Application::query('user') failed, now calling fetchQuery");
           return self.session.fetchQuery('user');
         });
     },
 
     actions: {
         flush: function() {
-            var self = this;
             console.log("Application::flush: starting flush");
-            self.session.flush().then(function() {
-                Coalesce.EmberSession.saveToStorage(self.session);
+            this.session.flush().then(function() {
                 console.log("Application::flush: done");
             }, function(error) {
-                console.error(error);
-                Coalesce.EmberSession.saveToStorage(self.session);                
-                console.log("Application::flush: error", error);
+                console.error("Application::flush: error", error);
             });
         },
+        saveToStorage: function(){
+          var session = this.session;
+
+          console.log('session newModels length =', session.newModels.size);
+
+          Coalesce.EmberSession.saveToStorage(session).then(function(){
+            console.log('session newModels length =', session.newModels.size);
+            console.log("Application::saveToStorage: done");
+          }, function(error){
+            console.error("Application::saveToStorage: error", error);
+          });
+        },
         addUser: function() {
-            var self = this;
+            var session = this.session; 
             var properties = this.get("controller").getProperties("name");
             var user = this.session.create('user', properties);
 
@@ -34,14 +41,23 @@ export default Ember.Route.extend({
 
             model.pushObject(user);
 
-            self.get("controller").set("name", "");
+            this.get("controller").set("name", "");
 
-            self.session.flush().then(function() {
-                Coalesce.EmberSession.saveToStorage(self.session);
+            console.log('session newModels length =', session.newModels.size);
+
+            session.flush().then(function() {
+                console.log("Application::addUser: flush done");
             }, function(error) {
-                console.error(error);
-                Coalesce.EmberSession.saveToStorage(self.session);                
+                console.error("Application::addUser: flush error", error);
+                           
             });
-        }
+        },
+        logCollectionCounts: function(){
+          var session = this.session;
+
+          console.log('session newModels length =', session.newModels.size);
+          console.log('session models length =', session.models.size);
+          console.log('session shadows length =', session.shadows.size);
+        },
     }
 });
