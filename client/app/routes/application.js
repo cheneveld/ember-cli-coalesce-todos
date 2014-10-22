@@ -7,6 +7,7 @@ export default Ember.Route.extend({
             Coalesce.EmberSession.saveToStorage(self.session);
             return users;
         }, function(error){
+          console.error(error);
           return self.session.fetchQuery('user');
         });
     },
