@@ -10,6 +10,7 @@ export default Ember.ObjectController.extend({
 
             if (this.get('isEditing')) {
                 this.set('isEditing', false);
+                this.send('flush');
                 
             } else {
                 this.send('removeUser');
