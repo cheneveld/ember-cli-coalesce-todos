@@ -11,16 +11,30 @@
 
 		<h1>Users</h1>
 
-		<form>
-			{{input value=name placeholder="name"}}
-			<button {{action 'addUser'}}>Add</button>
+		<form class="form-inline" role="form">
+			<div class="form-group">
+			{{input value=name placeholder="name" class="form-control"}}
+			<button {{action 'addUser'}} class="btn btn-default">Add</button>
+			</div>
 		</form>
-
-		<ul>
+		<br />
+		<table class="table table-striped">
+			<tbody>
 			{{#each itemController="user"}}
-				<li>{{link-to name 'todos.index' this}} <button {{action "removeUser"}}>X</button></li>
+				<tr>
+				{{#if isEditing}}
+			      <td colspan="2">{{input value=name placeholder="name"}}</td>
+			      <td><button {{action "acceptChanges"}} class="btn-xs btn-success">Save</button></td>
+			    {{else}}
+			    	<td>{{link-to name 'todos.index' this}} </td>
+			    	<td><button {{action "editUser"}} class="btn-xs btn-info ">Edit</button></td>
+			    	<td><button {{action "removeUser"}} class="btn-xs btn-danger ">Delete</button></td>
+			    {{/if}}
+
+				</tr>	
 			{{/each}}
-		</ul>
+			</tbody>
+		</table>
 	</div>
 
 	<div class="col-md-8">

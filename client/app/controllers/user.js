@@ -6,13 +6,13 @@ export default Ember.ObjectController.extend({
         editUser: function () {
             this.set('isEditing', true);
         },
-        acceptChanges: function () {
-            this.set('isEditing', false);
+        acceptChanges: function () {         
 
-            if (Ember.isEmpty(this.get('model.title'))) {
-                this.send('removeUser');
+            if (this.get('isEditing')) {
+                this.set('isEditing', false);
+                
             } else {
-                this.get('model').save();
+                this.send('removeUser');
             }
         },
         removeUser: function () {
