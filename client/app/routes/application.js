@@ -27,8 +27,7 @@ export default Ember.Route.extend({
                 Coalesce.EmberSession.saveToStorage(self.session);
             }, function(error) {
                 console.error(error);
-                Coalesce.EmberSession.saveToStorage(self.session);
-                
+                Coalesce.EmberSession.saveToStorage(self.session);                
             });
         }
     }

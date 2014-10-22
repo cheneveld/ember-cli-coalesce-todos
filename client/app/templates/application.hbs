@@ -10,8 +10,8 @@
 		</form>
 
 		<ul>
-			{{#each model}}
-				<li>{{link-to name 'todos.index' this}}</li>
+			{{#each itemController="user"}}
+				<li>{{link-to name 'todos.index' this}} <button {{action "removeUser"}}>X</button></li>
 			{{/each}}
 		</ul>
 	</div>

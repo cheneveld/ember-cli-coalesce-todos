@@ -31,4 +31,12 @@ class UsersController < ApplicationController
 	def create_user_params
 		params.require(:user).permit(:name, :client_id, :client_rev)
 	end
+
+	def destroy
+		user = User.find(params[:id])
+
+		user.destroy
+
+		render json: User.all
+	end
 end
