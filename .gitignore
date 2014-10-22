@@ -17,3 +17,4 @@ client/tmp
 client/bower_components
 client/vendor/coalesce-ember/*
 client/dist/*
+client/npm-debug.log
