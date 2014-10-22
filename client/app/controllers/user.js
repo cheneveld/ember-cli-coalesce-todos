@@ -20,7 +20,7 @@ export default Ember.ObjectController.extend({
             var user = this.get('model');
 
             //pull the user model out of the collection
-            self.get('parentController').popObject(user);
+            self.get('parentController.content').removeObject(user);
 
             //delete it from coalesce
             self.session.deleteModel(user);
