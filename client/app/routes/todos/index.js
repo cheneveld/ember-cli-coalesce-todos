@@ -10,23 +10,26 @@ export default Ember.Route.extend({
 
     actions: {
         addTodo: function() {
-            var self = this;
             var controller = this.get("controller");
+
+            var user = this.modelFor('user');
+            
 
             this.session.create('todo', {
                 title: controller.get("title"),
                 description: controller.get("description"),
-                user: this.modelFor('user')
+                user: user
             });
 
-            self.get("controller").set("title", "");
-            self.get("controller").set("description", "");
+            debugger
 
-            self.session.flush().then(function() {
+            this.get("controller").set("title", "");
+            this.get("controller").set("description", "");
+
+            this.session.flush().then(function() {
                 console.log("Todo::addTodo: flush done");
             }, function(error) {
                 console.error("Todo::addTodo: flush error", error);
-
             });
         }
     }

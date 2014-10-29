@@ -29,6 +29,7 @@ export default Ember.ObjectController.extend({
             self.session.flush().then(function() {
                 console.log("User::removeUser: flush done");
             }, function(error) {
+                debugger
                 console.error("Todo::removeUser: flush error", error);
 
             });

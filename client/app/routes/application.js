@@ -23,33 +23,26 @@ export default Ember.Route.extend({
         saveToStorage: function(){
           var session = this.session;
 
-          console.log('session newModels length =', session.newModels.size);
-
           Coalesce.EmberSession.saveToStorage(session).then(function(){
-            console.log('session newModels length =', session.newModels.size);
             console.log("Application::saveToStorage: done");
           }, function(error){
             console.error("Application::saveToStorage: error", error);
           });
         },
         addUser: function() {
-            var session = this.session; 
-            var properties = this.get("controller").getProperties("name");
-            var user = this.session.create('user', properties);
-
-            var model = this.get("controller.model");
+            var session = this.session, 
+                properties = this.get("controller").getProperties("name"),
+                user = this.session.create('user', properties),
+                model = this.get("controller.model");
 
             model.pushObject(user);
 
             this.get("controller").set("name", "");
 
-            console.log('session newModels length =', session.newModels.size);
-
             session.flush().then(function() {
                 console.log("Application::addUser: flush done");
             }, function(error) {
-                console.error("Application::addUser: flush error", error);
-                           
+                console.error("Application::addUser: flush error", error);             
             });
         },
         logCollectionCounts: function(){

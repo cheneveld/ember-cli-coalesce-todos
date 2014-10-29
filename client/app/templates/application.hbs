@@ -1,10 +1,14 @@
 <nav class="navbar navbar-default" role="navigation">
 	<div class="container-fluid">
-		<div class="navbar-header"><p class="navbar-brand">Coalesce Ember CLI ToDo</p></div>
-		<button {{action 'flush'}} class="btn btn-primary navbar-btn navbar-right">Flush</button>
-		<button {{action 'saveToStorage'}} class="btn btn-primary navbar-btn navbar-right">Save Session To Storage</button>
-		<button {{action 'logCollectionCounts'}} class="btn btn-primary navbar-btn navbar-right">logCollectionCounts</button>
-		
+		<div class="navbar-header">
+			<p class="navbar-brand">Coalesce Ember CLI ToDo</p>
+		</div>
+		{{link-to 'Home' 'index' classNames="btn btn-default navbar-btn"}}
+		<div class="btn-group navbar-right">
+			<button {{action 'flush'}} class="btn btn-primary navbar-btn">Flush</button>
+			<button {{action 'saveToStorage'}} class="btn btn-success navbar-btn">Save Session To Storage</button>	
+		</div>
+
 	</div>
 </nav>
 
@@ -29,18 +33,19 @@
 			      <td colspan="2">{{input value=name placeholder="name"}}</td>
 			      <td><button {{action "acceptChanges"}} class="btn-xs btn-success">Save</button></td>
 			    {{else}}
-			    	<td>{{link-to name 'todos.index' this}} </td>
+			    	<td>{{name}}</td>
+			    	<td>{{link-to 'Todos' 'todos.index' this class="btn btn-xs btn-primary"}}</td>
 			    	<td><button {{action "editUser"}} class="btn-xs btn-info ">Edit</button></td>
 			    	<td><button {{action "removeUser"}} class="btn-xs btn-danger ">Delete</button></td>
 			    {{/if}}
 
-				</tr>	
+				</tr>
 			{{/each}}
 			</tbody>
 		</table>
 	</div>
 
-	<div class="col-md-8">
+	<div class="col-md-4">
 		{{outlet}}
 	</div>
 

@@ -1,13 +1,26 @@
 <h1>Todos</h1>
 
-<form>
-	{{input value=title placeholder="title"}}
-	{{input value=description placeholder="description"}}
-	<button {{action 'addTodo'}}>Add</button>
+<form class="form-inline" role="form">
+	<div class="form-group">
+	{{input value=title placeholder="title" class="form-control"}}
+	{{input value=description placeholder="description" class="form-control"}}
+	<button {{action 'addTodo'}} class="btn btn-default">Add</button>
+	</div>
 </form>
 
-<ul>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Title</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
 	{{#each model}}
-		<li>{{title}} {{description}} - {{serializedString}}</li>
+		<tr>
+	      <td>{{title}}</td>
+	      <td>{{description}}</td>
+		</tr>	
 	{{/each}}
-</ul>
+	</tbody>
+</table>

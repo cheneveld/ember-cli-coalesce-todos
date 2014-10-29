@@ -37,6 +37,6 @@ class UsersController < ApplicationController
 
 		user.destroy
 
-		render json: User.all
+		head :no_content
 	end
 end
