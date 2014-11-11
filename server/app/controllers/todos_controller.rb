@@ -21,6 +21,16 @@ class TodosController < ApplicationController
 		end
 	end
 
+	def update
+		todo = Todo.find(params[:id])
+
+		if todo.update(create_todo_params)
+			render json: todo
+		else
+			raise "not implemented"
+		end
+	end
+
 	def create_todo_params
 		params.require(:todo).permit(:title, :description, :client_id, :client_rev, :user_id)
 	end

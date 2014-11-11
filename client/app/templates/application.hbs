@@ -3,10 +3,13 @@
 		<div class="navbar-header">
 			<p class="navbar-brand">Coalesce Ember CLI ToDo</p>
 		</div>
-		{{link-to 'Home' 'index' classNames="btn btn-default navbar-btn"}}
+		
 		<div class="btn-group navbar-right">
+			{{link-to 'Home' 'index' classNames="btn btn-default navbar-btn"}}
 			<button {{action 'flush'}} class="btn btn-primary navbar-btn">Flush</button>
 			<button {{action 'saveToStorage'}} class="btn btn-success navbar-btn">Save Session To Storage</button>	
+			<button {{action 'clearStorage'}} class="btn btn-danger navbar-btn">Clear Storage</button>	
+			<button {{action 'logSession'}} class="btn navbar-btn">Log Session</button>	
 		</div>
 
 	</div>
@@ -31,7 +34,7 @@
 				<tr>
 				{{#if isEditing}}
 			      <td colspan="2">{{input value=name placeholder="name"}}</td>
-			      <td><button {{action "acceptChanges"}} class="btn-xs btn-success">Save</button></td>
+			      <td colspan="2"><button {{action "acceptChanges"}} class="btn-xs btn-success">Save</button></td>
 			    {{else}}
 			    	<td>{{name}}</td>
 			    	<td>{{link-to 'Todos' 'todos.index' this class="btn btn-xs btn-primary"}}</td>
@@ -45,7 +48,7 @@
 		</table>
 	</div>
 
-	<div class="col-md-4">
+	<div class="col-md-8">
 		{{outlet}}
 	</div>
 

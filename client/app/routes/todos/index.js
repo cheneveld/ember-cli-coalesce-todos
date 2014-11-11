@@ -14,14 +14,11 @@ export default Ember.Route.extend({
 
             var user = this.modelFor('user');
             
-
             this.session.create('todo', {
                 title: controller.get("title"),
                 description: controller.get("description"),
                 user: user
             });
-
-            debugger
 
             this.get("controller").set("title", "");
             this.get("controller").set("description", "");

@@ -3,7 +3,7 @@ import Ember from 'ember';
 export default Ember.ObjectController.extend({
     isEditing: false,
     actions: {
-        editUser: function () {
+        editTodo: function () {
             this.set('isEditing', true);
         },
         acceptChanges: function () {         
@@ -13,23 +13,23 @@ export default Ember.ObjectController.extend({
                 this.send('flush');
                 
             } else {
-                this.send('removeUser');
+                this.send('removeTodo');
             }
         },
-        removeUser: function () {
+        removeTodo: function () {
             var self = this;
-            var user = this.get('model');
+            var todo = this.get('model');
 
             //pull the user model out of the collection
-            self.get('parentController.content').removeObject(user);
+            self.get('parentController.content').removeObject(todo);
 
             //delete it from coalesce
-            self.session.deleteModel(user);
+            self.session.deleteModel(todo);
 
             self.session.flush().then(function() {
-                console.log("User::removeUser: flush done");
+                console.log("Todo::removeTodo: flush done");
             }, function(error) {
-                console.error("Todo::removeUser: flush error", error);
+                console.error("Todo::removeTodo: flush error", error);
             });
         }
     }

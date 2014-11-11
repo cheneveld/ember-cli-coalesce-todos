@@ -7,19 +7,23 @@
 	<button {{action 'addTodo'}} class="btn btn-default">Add</button>
 	</div>
 </form>
-
+<br />
 <table class="table table-striped">
-	<thead>
-		<tr>
-			<th>Title</th>
-			<th>Description</th>
-		</tr>
-	</thead>
 	<tbody>
-	{{#each model}}
+	{{#each model itemController="todo"}}
 		<tr>
+		  {{#if isEditing}}
+		  <td>{{input value=title placeholder="title"}}</td>
+		  <td>{{input value=description placeholder="description"}}</td>
+		  <td><button {{action "cancelEditTodo"}} class="btn-xs btn-info">Cancel</button></td>
+		  <td><button {{action "acceptChanges"}} class="btn-xs btn-success">Save</button></td>
+		  
+		  {{else}}
 	      <td>{{title}}</td>
 	      <td>{{description}}</td>
+	      <td><button {{action "editTodo"}} class="btn-xs btn-info ">Edit</button></td>
+		  <td><button {{action "removeTodo"}} class="btn-xs btn-danger ">Delete</button></td>
+	      {{/if}}
 		</tr>	
 	{{/each}}
 	</tbody>
